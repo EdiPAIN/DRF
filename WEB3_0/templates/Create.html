@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <title>Add Account</title>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="mt-5">Add New Account before you start</h1>
+        <form method="post" action="{% url 'Create' %}" class="form-horizontal">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="User_Name" class="control-label col-md-2">Name:</label>
+                <div class="col-md-10">
+                    <input type="text" name="User_Name" id="User_Name" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="User_IIN" class="control-label col-md-2">INN:</label>
+                <div class="col-md-10">
+                    <input type="number" name="User_IIN" id="User_IIN" class="form-control" pattern="[0-9]{12}" title="INN must be exactly 12 digits" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="All_money" class="control-label col-md-2">Balance:</label>
+                <div class="col-md-10">
+                    <input type="number" name="All_money" id="All_money" class="form-control" step="0.01" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-primary">
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
