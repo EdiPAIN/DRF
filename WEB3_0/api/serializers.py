@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class MoneyTransferSerializer(serializers.Serializer):
     source_inn = serializers.IntegerField()
-    target_inn = serializers.JSONField()
+    target_inn = serializers.ListField()
     amount = serializers.FloatField()
 
 
