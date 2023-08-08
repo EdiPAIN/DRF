@@ -20,6 +20,7 @@ This Django application allows users to create accounts, view user lists, and in
 - Initiate money transfers between users.
 - Basic validation and error handling for account creation and money transfers.
 - Responsive and user-friendly front-end templates using Bootstrap.
+- you can send money by multiple users separated by a space in target_inn
 
 ## Installation
 
