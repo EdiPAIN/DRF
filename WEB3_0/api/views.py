@@ -57,7 +57,6 @@ class TransferViewSet(APIView):
                     return Response({"message": f" {target} ИИН не найден."},
                                     status=status.HTTP_404_NOT_FOUND)
 
-
             if source_account.All_money >= amount:
                 for target in target_inn:
                     target_account = User_Model.objects.get(User_IIN=target)
@@ -73,8 +72,6 @@ class TransferViewSet(APIView):
 
         else:
             return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
-
-
 
     def get(self, request):
         results = User_Model.objects.all
