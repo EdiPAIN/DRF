@@ -9,4 +9,3 @@ class User_Model(models.Model):
 
     def __str__(self) -> object:
         return f"{self.User_Name} {self.All_money}"
-
