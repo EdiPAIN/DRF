@@ -4,7 +4,6 @@ from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.views import APIView
 from .models import User_Model
-from django.http import HttpResponseForbidden
 from .serializers import UserSerializer, MoneyTransferSerializer
 
 
@@ -35,6 +34,7 @@ class UserListCreateView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class TransferViewSet(APIView):
+
     def post(self, request):
         serializer = MoneyTransferSerializer(data=request.data)
         if serializer.is_valid():
@@ -42,31 +42,39 @@ class TransferViewSet(APIView):
             target_inn = serializer.validated_data.get('target_inn')
             amount = serializer.validated_data.get('amount')
 
+            target_inn = target_inn.split()
+            lst_num = len(target_inn)
+            amount_1 = amount / float(lst_num)
+
+            source_account = User_Model.objects.get(User_IIN=source_inn)
+
+            for target in target_inn:
+                if target == source_account:
+                    return Response({"message": "ИИН одинаковые ввыдите данные занова"},
+                                    status=status.HTTP_404_NOT_FOUND)
+
+                elif target is not User_Model.User_IIN:
+                    return Response({"message": f" {target} ИИН не найден."},
+                                    status=status.HTTP_404_NOT_FOUND)
 
 
-            if source_inn == target_inn:
-                return Response({"message": "ИИН одинаковые напишите заново."},
-                                status=status.HTTP_404_NOT_FOUND)
-
-            try:
-                source_account = User_Model.objects.get(User_IIN=source_inn)
-                target_account = User_Model.objects.get(User_IIN=target_inn)
-
-                if source_account.All_money >= amount:
-                    source_account.All_money -= amount
-                    target_account.All_money += amount
-                    source_account.save()
+            if source_account.All_money >= amount:
+                for target in target_inn:
+                    target_account = User_Model.objects.get(User_IIN=target)
+                    target_account.All_money += amount_1
                     target_account.save()
-                    return Response({"message": "Перевод выполнен успешно."}, status=status.HTTP_200_OK)
-                else:
-                    return Response({"message": "Недостаточно средств на счете отправителя."},
-                                    status=status.HTTP_400_BAD_REQUEST)
 
-            except User_Model.DoesNotExist:
-                return Response({"message": "Один из счетов с указанным ИНН не найден."},
-                                status=status.HTTP_404_NOT_FOUND)
+                source_account.All_money -= amount
+                source_account.save()
+                return redirect('user-list')
+            else:
+                return Response({"message": "Недостаточно средств на счете отправителя."},
+                                status=status.HTTP_400_BAD_REQUEST)
+
         else:
             return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+
+
 
     def get(self, request):
         results = User_Model.objects.all

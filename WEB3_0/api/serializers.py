@@ -7,9 +7,8 @@ class UserSerializer(serializers.ModelSerializer):
         model = User_Model
         fields = '__all__'
 
+
 class MoneyTransferSerializer(serializers.Serializer):
-    source_inn = serializers.IntegerField()
-    target_inn = serializers.ListField()
-    amount = serializers.FloatField()
-
-
+    source_inn = serializers.CharField()
+    target_inn = serializers.CharField()
+    amount = serializers.FloatField(default=0)
