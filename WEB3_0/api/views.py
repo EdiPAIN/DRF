@@ -44,7 +44,7 @@ class TransferViewSet(APIView):
 
             target_inn = target_inn.split()
             lst_num = len(target_inn)
-            amount_1 = amount / float(lst_num)
+            amount_1 = amount / lst_num
 
             source_account = User_Model.objects.get(User_IIN=source_inn)
 
@@ -52,7 +52,9 @@ class TransferViewSet(APIView):
                 if target == source_account:
                     return Response({"message": "ИИН одинаковые ввыдите данные занова"},
                                     status=status.HTTP_404_NOT_FOUND)
-
+                elif target.isdigit() == False:
+                    return Response({"message": f" {target} надо ИИН, только цивры."},
+                                    status=status.HTTP_404_NOT_FOUND)
                 elif target is not User_Model.User_IIN:
                     return Response({"message": f" {target} ИИН не найден."},
                                     status=status.HTTP_404_NOT_FOUND)
