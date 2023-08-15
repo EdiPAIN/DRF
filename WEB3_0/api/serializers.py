@@ -11,6 +11,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class MoneyTransferSerializer(serializers.Serializer):
-    source_inn = serializers.CharField(max_length=12, validators=[MinLengthValidator(12)])
-    target_inn = serializers.CharField(max_length=12, validators=[MinLengthValidator(12)])
+    source_inn = serializers.CharField()
+    target_inn = serializers.CharField()
     amount = serializers.DecimalField(default=0, max_digits=100, decimal_places=2)
