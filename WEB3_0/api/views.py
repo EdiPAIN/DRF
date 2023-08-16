@@ -5,7 +5,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from .models import User_Model
 from .serializers import UserSerializer, MoneyTransferSerializer
-
+from django.core.exceptions import ObjectDoesNotExist
 
 def user_list_view(request):
     users = User_Model.objects.all()
@@ -55,15 +55,16 @@ class TransferViewSet(APIView):
                 elif target.isdigit() == False:
                     return Response({"message": f" {target} надо ИИН, только цивры."},
                                     status=status.HTTP_404_NOT_FOUND)
-                elif target is not User_Model.User_IIN:
-                    return Response({"message": f" {target} ИИН не найден."},
-                                    status=status.HTTP_404_NOT_FOUND)
 
             if source_account.All_money >= amount:
                 for target in target_inn:
-                    target_account = User_Model.objects.get(User_IIN=target)
-                    target_account.All_money += amount_1
-                    target_account.save()
+                    try:
+                        target_account = User_Model.objects.get(User_IIN=target)
+                        target_account.All_money += amount_1
+                        target_account.save()
+                    except ObjectDoesNotExist:
+                        return Response({"message": f" {target} ИИН не найден."},
+                                        status=status.HTTP_400_BAD_REQUEST)
 
                 source_account.All_money -= amount
                 source_account.save()

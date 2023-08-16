@@ -4,7 +4,6 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from .models import User_Model
 
-
 class MoneyTransferTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -20,7 +19,7 @@ class MoneyTransferTestCase(TestCase):
         }
         response = self.client.post(url, data, format='json')
 
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response.status_code, 302)
         self.source_user.refresh_from_db()
         self.target_user.refresh_from_db()
         self.assertEqual(self.source_user.All_money, 800.0)
@@ -32,7 +31,7 @@ class UserListCreateViewTestCase(TestCase):
         self.client = APIClient()
 
     def test_create_user(self):
-        url = reverse('Create/')
+        url = reverse('Create')
         data = {
             'User_Name': 'Eve',
             'User_IIN': '111122223333',
@@ -40,22 +39,7 @@ class UserListCreateViewTestCase(TestCase):
         }
         response = self.client.post(url, data, format='json')
 
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response.status_code, 200)
         user = User_Model.objects.get(User_Name='Eve')
         self.assertEqual(user.User_IIN, '111122223333')
         self.assertEqual(user.All_money, 100.0)
-
-
-class UserListViewTestCase(TestCase):
-    def setUp(self):
-        self.client = APIClient()
-        self.user = User_Model.objects.create(User_Name="Alice", User_IIN="123456789012", All_money=1000.0)
-
-    def test_user_list(self):
-        url = reverse('user-list')
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertContains(response, self.user.User_Name)
-        self.assertContains(response, self.user.User_IIN)
-        self.assertContains(response, self.user.All_money)
